@@ -21,19 +21,21 @@ int main(void)
             free_image(&photo);
             load_command(&photo, filename);
             if (photo.loaded)
-                select_all_pixels(&photo);
+                select_all_pixels(&photo, 1);
         }
         else if (!strcmp(command, "SELECT"))
         {
-            select_pixels(&photo);
-        }
-        else if (!strcmp(command, "SELECT ALL"))
-        {
-            select_all_pixels(&photo);
+            char buff[LENGHTMAX];
+            scanf("%s", buff);
+            if (!strcmp(buff, "ALL"))
+                select_all_pixels(&photo, 0);
+            else
+                select_pixels(&photo, buff);
         }
         else if (!strcmp(command, "CROP"))
         {
             crop_image(&photo);
+            select_all_pixels(&photo, 1);
         }
         else if (!strcmp(command, "PRINT"))
         {
@@ -64,7 +66,10 @@ int main(void)
                 break;
             }
             else
+            {
                 printf("No image loaded.\n");
+                break;
+            }
         }
         else
             printf("Invalid command\n");
