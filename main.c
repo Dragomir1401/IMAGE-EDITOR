@@ -66,12 +66,22 @@ int main(void)
 			}
 			else
 			{
-				printf("No image loaded.\n");
+				printf("No image loaded\n");
 				break;
 			}
 		}
 		else
-			printf("Invalid command\n");
+		{
+			char buff, junk[LENGHTMAX];
+			buff = getchar();
+			if (buff == ' ')
+			{
+				scanf("%s", junk);
+				printf("Invalid command\n");
+			}
+			else
+				printf("Invalid command\n");
+		}
 		scanf("%s", command);
 	}
 	return 0;

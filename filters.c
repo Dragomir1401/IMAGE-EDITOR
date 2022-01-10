@@ -82,28 +82,26 @@ void apply_gaussian_blur(picture photo, picture copy, uint_fast32_t i, uint_fast
 
 void apply_filter(picture *photo, char command[])
 {
-	if (!photo->loaded)
-	{
-		printf("No image loaded\n");
-		return;
-	}
-	if (photo->type != 3 && photo->type != 6)
-	{
-		printf("Invalid command\n"); //where is easy charlie chaplin
-		return;
-	}
 	char buff;
 	buff = getchar();
 	if (buff == ' ')
 	{
 		char filter[LENGHTMAX];
 		scanf("%s", filter);
+		if (!photo->loaded)
+		{
+			printf("No image loaded\n");
+			return;
+		}
 		if (strcmp(command, "APPLY"))
 		{
 			printf("Invalid command\n");
 			return;
 		}
-		if (!strcmp(filter, "EDGE") || !strcmp(filter, "SHARPEN") || !strcmp(filter, "BLUR") || !strcmp(filter, "GAUSSIAN_BLUR"))
+		int charlie_chaplin = 0;
+		if (photo->type != 3 && photo->type != 6)
+			charlie_chaplin = 1;
+		if ((!strcmp(filter, "EDGE") || !strcmp(filter, "SHARPEN") || !strcmp(filter, "BLUR") || !strcmp(filter, "GAUSSIAN_BLUR")) && !charlie_chaplin)
 		{
 
 			picture copy = {};
@@ -113,7 +111,6 @@ void apply_filter(picture *photo, char command[])
 			copy.red = alloc_image(photo->size.height, photo->size.width);
 			copy.green = alloc_image(photo->size.height, photo->size.width);
 			copy.blue = alloc_image(photo->size.height, photo->size.width);
-			int broke = 0;
 			for (uint_fast32_t i = 0; i < photo->size.height; i++)
 				for (uint_fast32_t j = 0; j < photo->size.width; j++)
 					if (i >= photo->start.height && j >= photo->start.width && i < photo->stop.height && j < photo->stop.width && i > 0 && j > 0 && i < photo->size.height - 1 && j < photo->size.width - 1)
@@ -138,16 +135,25 @@ void apply_filter(picture *photo, char command[])
 			copy.max = photo->max;
 			*photo = copy;
 			photo->loaded = 1;
-			if (!broke)
-				printf("APPLY %s done\n", filter);
+			printf("APPLY %s done\n", filter);
 		}
 		else
 		{
+			if (photo->type != 3 && photo->type != 6)
+			{
+				printf("Easy, Charlie Chaplin\n");
+				return;
+			}
 			printf("Invalid filter name\n");
 		}
 	}
 	else
 	{
+		if (!photo->loaded)
+		{
+			printf("No image loaded\n");
+			return;
+		}
 		printf("Invalid command\n");
 	}
 }

@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "structures.h"
-
+#define LENGHTMAX 100
 void save_bw(picture photo, char *filename, char type)
 {
 	FILE *file = fopen(filename, "w");
@@ -71,19 +71,18 @@ void save_rgb(picture photo, char *filename, char type)
 
 void save_image(picture photo, char *filename)
 {
-	char type, buff;
-	type = getchar();
-	if (type != '\n')
-		while (buff != '\n')
-			buff = getchar();
-	if (!photo.loaded)
+	char buff;
+	buff = getchar();
+	if (buff == ' ')
 	{
-		printf("No image loaded\n");
-		return;
-	}
+		char rest[LENGHTMAX];
+		scanf("%s", rest);
+		if (!photo.loaded)
+		{
+			printf("No image loaded\n");
+			return;
+		}
 
-	if (type == ' ')
-	{
 		if (photo.type == 4 || photo.type == 5 || photo.type == 6)
 			photo.type -= 3;
 		if (photo.type == 2 || photo.type == 1)
@@ -95,17 +94,23 @@ void save_image(picture photo, char *filename)
 			save_rgb(photo, filename, 'a');
 		}
 	}
-	else if (type == '\n')
+	else if (buff == '\n')
 	{
+		if (!photo.loaded)
+		{
+			printf("No image loaded\n");
+			return;
+		}
+
 		if (photo.type == 4 || photo.type == 5 || photo.type == 6)
 			photo.type -= 3;
 		if (photo.type == 2 || photo.type == 1)
 		{
-			save_bw(photo, filename, type);
+			save_bw(photo, filename, buff);
 		}
 		if (photo.type == 3)
 		{
-			save_rgb(photo, filename, type);
+			save_rgb(photo, filename, buff);
 		}
 	}
 }
