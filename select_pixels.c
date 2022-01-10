@@ -72,7 +72,6 @@ void select_pixels(picture *photo, char *buff)
 		if (strstr(buff, "-"))
 		{
 			printf("Invalid set of coordinates\n");
-			select_all_pixels(photo, 1, 0);
 			return;
 		}
 		else
@@ -80,7 +79,6 @@ void select_pixels(picture *photo, char *buff)
 		if (strstr(y111, "-"))
 		{
 			printf("Invalid set of coordinates\n");
-			select_all_pixels(photo, 1, 0);
 			return;
 		}
 		else
@@ -88,7 +86,6 @@ void select_pixels(picture *photo, char *buff)
 		if (strstr(x222, "-"))
 		{
 			printf("Invalid set of coordinates\n");
-			select_all_pixels(photo, 1, 0);
 			return;
 		}
 		else
@@ -96,7 +93,6 @@ void select_pixels(picture *photo, char *buff)
 		if (strstr(y222, "-"))
 		{
 			printf("Invalid set of coordinates\n");
-			select_all_pixels(photo, 1, 0);
 			return;
 		}
 		else
@@ -121,7 +117,6 @@ void select_pixels(picture *photo, char *buff)
 	if (x2 > photo->size.width || y2 > photo->size.height || x1 == x2 || y1 == y2)
 	{
 		printf("Invalid set of coordinates\n");
-		select_all_pixels(photo, 1, 0);
 		return;
 	}
 	photo->start.width = x1;
