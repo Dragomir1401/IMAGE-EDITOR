@@ -1,0 +1,106 @@
++---------------------------------------+
+|                                       |
+|                                       |
+|       Copyright Dragomir Andrei       |
+|                312 CA                 |
+|                                       |
+|                                       |
++---------------------------------------+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~Description~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    This project is basically a basic image editor with command input from
+stdin. It accomplishes basic functions like cropping a certain part of an
+image, rotating certain parts or applying a filter over it. It works with 
+".ppm" and ".pgm" image types. This type has an established format with
+a magic number on the first line, the pair for width and height of the 
+image and then the maximum number that can be stored in the matrix next.
+The matrices for representing the image can be stored in binary or ascii.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Commands~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+LOAD <filename> - Given a filename, it loads an image into the program
+SELECT <x1> <y1> <x2> <y2> - Selects a part of the image to work with
+SELECT ALL - Selects the entire image (default when loading an image)
+ROTATE <angle> - Rotates the entire image at the given angle or a square
+                selection
+CROP - Crops the image after the selection it was last at
+APPLY <effect-name> - Applies a given effect to the last selection
+SAVE <filename> [ascii] - Saves the image either in binary or ascii
+EXIT - Exits the program and frees resources
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~How to run it~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+make && ./image_editor
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~Command Description~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+------LOAD-----
+
+    Reads and stores int matrices (depending on how many kernels we 
+have: 1 or 3) the data from any file that has a PBM format, meaning
+the a header with a P1-6 identifier, width, height and an optional max
+number, that shows what the maximum value of a pixel can be. It works by
+simply getting the input with fscanf or fread and storing it in structures
+for future use.
+
+-----SELECT-----
+
+    Selects a region of the image, meaning the pixels in the [x1, x2) and
+[y1, y2) interval. We store the beggining pixel in the structure and the
+end pixel as well. The coordinates have to be valid, but the program will
+tell you ifthe input is erronated such as:
+
+-coordinates are bigger than the image itself
+-coordinates are negative
+-coordinates are both coordinates the same value
+-coordinates are not numbers
+
+-----SELECT ALL-----
+
+    Selects the whole image. This is the default when you load an image,
+so you don't have to type this every time you load a new image. Full selection
+has rotation supported even if it is not a square image.
+
+------ROTATE-------
+
+    Rotates the image a multiple of 90 degrees, either clockwise or 
+counter-clockwise.Positive values mean the image will rotate clockwise.
+The image or the selection has to be square, and the values have to be
+in [-360, 360]. The implementation isbased on transposing a matrix but
+iterating through it differently.
+
+------CROP-------
+
+    Saves a new image over the initial one consisting on the pixels selected
+with the SELECT command. It frees the unnecessary size. There is no way of
+getting to the initialimage without loading it again. Implementation
+is based on making a copy and putting it
+in the memory place of the first image.
+
+-----APPLY------
+
+Applies any of the effects from our range of filters. This command only affects
+the selected pixels. Implementation is based on multiplying a pixel with each
+element of thematrix for specific filters. The filters are as follow:
+
+EDGE
+SHARPEN
+BLUR
+GAUSSIAN_BLUR
+
+-----SAVE-----
+
+Saves the image in either ascii or binary format.
+The command defaults to binary. To save ascii format you need to put the 
+argument ascii like:
+SAVE <filename> [ascii]
+
+----EXIT------
+
+Shuts down the program and free's all the allocated memory.
+Program can be shut even if there are no images loaded.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

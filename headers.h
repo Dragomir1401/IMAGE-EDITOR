@@ -1,5 +1,5 @@
 #include <stdint.h>
-int load_command(picture *photo, char *filename);
+int load_command(picture * photo, char *filename);
 void free_image(picture *photo);
 void print_image(picture photo);
 void crop_image(picture *photo);

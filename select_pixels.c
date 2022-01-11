@@ -14,9 +14,8 @@ void swap(uint_fast32_t *pa, uint_fast32_t *pb)
 
 int string_is_digit(char tmp[COMM_MAX])
 {
-	long unsigned int j = 0;
-	while (j < strlen(tmp))
-	{
+	unsigned long j = 0;
+	while (j < strlen(tmp)) {
 		if ((tmp[j] > 57 || tmp[j] < 48) && tmp[j] != '-')
 			return 0;
 		j++;
@@ -27,80 +26,60 @@ int string_is_digit(char tmp[COMM_MAX])
 void select_pixels(picture *photo, char *buff)
 {
 	char x222[COMM_MAX], y111[COMM_MAX], y222[COMM_MAX], buff1;
-	int x11, x22, y11, y22;
-	uint_fast32_t x1, x2, y1, y2;
-	//CHECK VALIDITY OF INPUT.....
+	int x11, x22, y11, y22; uint_fast32_t x1, x2, y1, y2;
+
 	buff1 = getchar();
-	if (buff1 == ' ')
+	if (buff1 == ' ') {
 		scanf("%s", y111);
-	else
-	{
+	} else {
 		printf("Invalid command\n");
 		return;
 	}
-
 	buff1 = getchar();
-	if (buff1 == ' ')
+	if (buff1 == ' ') {
 		scanf("%s", x222);
-	else
-	{
+	} else {
+		printf("Invalid command\n");
+		return;
+	}
+	buff1 = getchar();
+	if (buff1 == ' ') {
+		scanf("%s", y222);
+	} else {
 		printf("Invalid command\n");
 		return;
 	}
 
-	buff1 = getchar();
-	if (buff1 == ' ')
-		scanf("%s", y222);
-	else
-	{
-		printf("Invalid command\n");
-		return;
-	}
-	if (!photo->loaded)
-	{
+	if (!photo->loaded) {
 		printf("No image loaded\n");
 		return;
 	}
-
-	if (!string_is_digit(y111) || !string_is_digit(x222) || !string_is_digit(y222))
-	{
+	if (!string_is_digit(y111) || !string_is_digit(x222) ||
+		!string_is_digit(y222)) {
 		printf("Invalid command\n");
 		return;
 	}
-	else
-	{
-		if (strstr(buff, "-"))
-		{
-			printf("Invalid set of coordinates\n");
-			return;
-		}
-		else
-			x11 = atoi(buff);
-		if (strstr(y111, "-"))
-		{
-			printf("Invalid set of coordinates\n");
-			return;
-		}
-		else
-			y11 = atoi(y111);
-		if (strstr(x222, "-"))
-		{
-			printf("Invalid set of coordinates\n");
-			return;
-		}
-		else
-			x22 = atoi(x222);
-		if (strstr(y222, "-"))
-		{
-			printf("Invalid set of coordinates\n");
-			return;
-		}
-		else
-			y22 = atoi(y222);
+	if (strstr(buff, "-")) {
+		printf("Invalid set of coordinates\n");
+		return;
 	}
-
-	if (!photo->loaded)
-	{
+	x11 = atoi(buff);
+	if (strstr(y111, "-")) {
+		printf("Invalid set of coordinates\n");
+		return;
+	}
+	y11 = atoi(y111);
+	if (strstr(x222, "-")) {
+		printf("Invalid set of coordinates\n");
+		return;
+	}
+	x22 = atoi(x222);
+	if (strstr(y222, "-")) {
+		printf("Invalid set of coordinates\n");
+		return;
+		}
+	y22 = atoi(y222);
+	if (!photo->loaded) {
 		printf("No image loaded\n");
 		return;
 	}
@@ -114,11 +93,12 @@ void select_pixels(picture *photo, char *buff)
 		swap(&x1, &x2);
 	if (y1 > y2)
 		swap(&y1, &y2);
-	if (x2 > photo->size.width || y2 > photo->size.height || x1 == x2 || y1 == y2)
-	{
+	if (x2 > photo->size.width || y2 > photo->size.height || x1 == x2 ||
+		y1 == y2) {
 		printf("Invalid set of coordinates\n");
 		return;
 	}
+
 	photo->start.width = x1;
 	photo->stop.width = x2;
 	photo->start.height = y1;
@@ -128,8 +108,7 @@ void select_pixels(picture *photo, char *buff)
 
 void select_all_pixels(picture *photo, int just_loaded, int just_cropped)
 {
-	if (!photo->loaded && !just_cropped)
-	{
+	if (!photo->loaded && !just_cropped) {
 		printf("No image loaded\n");
 		return;
 	}
