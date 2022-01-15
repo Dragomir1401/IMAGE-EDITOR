@@ -4,7 +4,7 @@
 #include <string.h>
 #include "structures.h"
 #include "headers.h"
-
+// TO DO COMMENTS
 void crop_image(picture *photo)
 {
 	if (!photo->loaded) {

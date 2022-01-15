@@ -9,12 +9,12 @@
 
 void free_matrix(double **p, uint32_t rows)
 {
-	//simple function for freeing a matrix
+	// Simple function for freeing a matrix
 	for (uint_fast32_t i = 0; i < rows; i++)
 		free(p[i]);
 
 	free(p);
-	//it works by freeing each line then the matrix itself
+	// It works by freeing each line then the matrix itself
 }
 
 double **rotate90clockwise(double **a, uint_fast32_t N)
@@ -35,6 +35,8 @@ double **rotate90clockwise(double **a, uint_fast32_t N)
 
 void rotate_matrix(picture *photo)
 {
+	// We make a copy for each kernel and alloc memory for each with
+	// the size of the selection
 	double **copy_r, **copy_g, **copy_b, **copy;
 	if (photo->type == 2 || photo->type == 1 || photo->type == 4 ||
 		photo->type == 5) {
@@ -50,6 +52,8 @@ void rotate_matrix(picture *photo)
 		copy_b = alloc_image(photo->stop.height - photo->start.height,
 							 photo->stop.width - photo->start.width);
 	}
+	// We copy the selection from the original matrix to a copy with only the
+	// selection inside
 	for (uint_fast32_t i = photo->start.height; i < photo->stop.height; i++)
 		for (uint_fast32_t j = photo->start.width; j < photo->stop.width; j++)
 			if (photo->type == 2 || photo->type == 1 || photo->type == 4 ||
@@ -67,6 +71,7 @@ void rotate_matrix(picture *photo)
 				copy_b[i - photo->start.height][j - photo->start.width] =
 				photo->blue[i][j];
 			}
+	//We proceed to rotate each kernel by 90 degrees
 	if (photo->type == 2 || photo->type == 1 || photo->type == 4 ||
 	    photo->type == 5) {
 		copy = rotate90clockwise(copy, photo->stop.height -
@@ -80,6 +85,8 @@ void rotate_matrix(picture *photo)
 			copy_b = rotate90clockwise(copy_b, photo->stop.height -
 								   photo->start.height);
 	}
+
+	// We copy only the pixels from the selection back in the original matrix
 	for (uint_fast32_t i = photo->start.height; i < photo->stop.height; i++)
 		for (uint_fast32_t j = photo->start.width; j < photo->stop.width; j++)
 			if (photo->type == 2 || photo->type == 1 || photo->type == 4 ||
@@ -96,6 +103,8 @@ void rotate_matrix(picture *photo)
 				photo->blue[i][j] =
 				copy_b[i - photo->start.height][j - photo->start.width];
 			}
+
+	// We free the copies made in order not to have memory leaks
 	if (photo->type == 2 || photo->type == 1 || photo->type == 4 ||
 		photo->type == 5) {
 		free_matrix(copy, photo->stop.height - photo->start.height);
@@ -110,6 +119,8 @@ void rotate_matrix(picture *photo)
 
 void rotate_entire_matrix(picture *photo)
 {
+	// We make a copy for each kernel and alloc memory for each with
+	// the size of the selection
 	double **copy_r, **copy_g, **copy_b, **copy;
 	if (photo->type == 2 || photo->type == 1 || photo->type == 4 ||
 	    photo->type == 5) {
@@ -121,7 +132,7 @@ void rotate_entire_matrix(picture *photo)
 
 		copy_b = alloc_image(photo->size.height, photo->size.width);
 	}
-
+	// We make a copy of the entire matrix
 	for (uint_fast32_t i = 0; i < photo->size.height; i++)
 		for (uint_fast32_t j = 0; j < photo->size.width; j++)
 			if (photo->type == 2 || photo->type == 1 || photo->type == 4 ||
@@ -134,8 +145,10 @@ void rotate_entire_matrix(picture *photo)
 
 				copy_b[i][j] = photo->blue[i][j];
 			}
+	// We free the initial photo
 	free_image(photo);
 
+	// We alloc a new photo with the coordinates swapped
 	if (photo->type == 2 || photo->type == 1 || photo->type == 4 ||
 		photo->type == 5) {
 		photo->bw = alloc_image(photo->size.width, photo->size.height);
@@ -146,6 +159,9 @@ void rotate_entire_matrix(picture *photo)
 
 		photo->blue = alloc_image(photo->size.width, photo->size.height);
 	}
+
+	// We rotate the matrix in the initial photo based on the values on
+	// the copy made before
 	for (uint_fast32_t i = 0; i < photo->size.width; i++)
 		for (uint_fast32_t j = 0; j < photo->size.height; j++)
 			if (photo->type == 2 || photo->type == 1 || photo->type == 4 ||
@@ -159,6 +175,8 @@ void rotate_entire_matrix(picture *photo)
 
 				photo->blue[i][j] = copy_b[photo->size.height - j - 1][i];
 			}
+
+	// We proceed to free the copies used
 	if (photo->type == 2 || photo->type == 1 || photo->type == 4 ||
 		photo->type == 5) {
 		free_matrix(copy, photo->size.height);
@@ -171,6 +189,8 @@ void rotate_entire_matrix(picture *photo)
 		free_matrix(copy_b, photo->size.height);
 	}
 
+	// We swap the coordinates for selection and entire photo
+	// using bitwise swap
 	photo->size.height = photo->size.height ^ photo->size.width;
 	photo->size.width = photo->size.height ^ photo->size.width;
 	photo->size.height = photo->size.height ^ photo->size.width;
@@ -186,44 +206,52 @@ void rotate_entire_matrix(picture *photo)
 
 void rotate_image(picture *photo, char *rotation)
 {
+	// If we dont have a photo loaded we print accordingly
 	if (!photo->loaded) {
 		printf("No image loaded\n");
 		return;
 	}
-
+	// Make the angle integer
 	int angle = atoi(rotation);
 
+	// If we dont have a supported angle we print the message
 	if (angle % 90) {
 		fprintf(stdout, ERROR_ANGLE);
 		return;
 	}
+
+	// We make the angle positive if we have it negative
 	int negative_angle = 0;
 	if (angle < 0) {
 		angle += 360;
 		negative_angle = 1;
 	}
-
+	// We count how many rotations we have to do
 	int count_rotations = angle / 90;
 	uint_fast32_t height = photo->stop.height - photo->start.height;
 	uint_fast32_t width = photo->stop.width - photo->start.width;
 
+	//If the selection is not square we print a message
 	if (height != width && height != photo->size.height &&
 		width != photo->size.width) {
 		fprintf(stdout, SELECTION_ERROR);
 		return;
 	}
+
+	// We make a number of rotations if we have a selection from the matrix
 	if (height != photo->size.height || width != photo->size.width) {
 		while (count_rotations) {
 			rotate_matrix(photo);
 			count_rotations--;
 		}
 	} else {
+		// We rotate the entire matrix a number of times
 		while (count_rotations) {
 			rotate_entire_matrix(photo);
 			count_rotations--;
 		}
 	}
-
+	// We print a message based on the angle
 	if (!negative_angle)
 		printf("Rotated %d\n", angle);
 	else

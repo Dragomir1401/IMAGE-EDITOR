@@ -6,6 +6,7 @@
 #include "headers.h"
 #include <math.h>
 #define LENGHTMAX 100
+// TO DO COMMENTS
 double clamp(double x, double max)
 {
 	int min = 0;

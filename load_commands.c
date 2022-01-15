@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "structures.h"
 #define MAX_LINE_SIZE 1000
+// TO DO COMMENTS
 double **alloc_image(int height, int width)
 {
 	double **image = malloc(height * sizeof(double *));
@@ -40,6 +41,7 @@ int read_image(picture *photo, char *filename)
 		return 0;
 	}
 	fseek(file, 3, SEEK_CUR);
+	// TO DO CHECK COMMENTS
 	//int first_comment = 1;
 	//check_comment(file, &first_comment);
 	//first_comment = 0;

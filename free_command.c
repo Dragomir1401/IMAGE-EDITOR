@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "structures.h"
+// TO DO COMMENTS
 void print_image(picture photo)
 {
 	if (photo.type == 2 || photo.type == 1) {
