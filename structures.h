@@ -9,10 +9,10 @@ typedef struct size {
 typedef struct picture {
 	uint_fast8_t type;
 	uint_fast8_t max;
-	uint_fast8_t **bw;
-	uint_fast8_t **red;
-	uint_fast8_t **green;
-	uint_fast8_t **blue;
+	double **bw;
+	double **red;
+	double **green;
+	double **blue;
 	dimensions start, stop;
 	dimensions size;
 	uint_fast8_t loaded;

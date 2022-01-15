@@ -7,14 +7,14 @@ void print_image(picture photo)
 	if (photo.type == 2 || photo.type == 1) {
 		for (uint_fast32_t i = 0; i < photo.size.height; i++) {
 			for (uint_fast32_t j = 0; j < photo.size.width; j++)
-				printf("%d ", photo.bw[i][j]);
+				printf("%f ", photo.bw[i][j]);
 
 			printf("\n");
 		}
 	} else if (photo.type == 3) {
 		for (uint_fast32_t i = 0; i < photo.size.height; i++) {
 			for (uint_fast32_t j = 0; j < photo.size.width; j++)
-				printf("%d %d %d  ", photo.red[i][j], photo.green[i][j],
+				printf("%f %f %f  ", photo.red[i][j], photo.green[i][j],
 					   photo.blue[i][j]);
 
 			printf("\n");

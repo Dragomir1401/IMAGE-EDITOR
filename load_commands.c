@@ -3,14 +3,14 @@
 #include <stdlib.h>
 #include "structures.h"
 #define MAX_LINE_SIZE 1000
-uint_fast8_t **alloc_image(int height, int width)
+double **alloc_image(int height, int width)
 {
-	uint_fast8_t **image = malloc(height * sizeof(uint_fast8_t *));
+	double **image = malloc(height * sizeof(double *));
 	if (!image)
 		printf("Cant alloc memory\n");
 
 	for (int i = 0; i < height; i++) {
-		image[i] = malloc(width * sizeof(uint_fast8_t));
+		image[i] = malloc(width * sizeof(double));
 
 		if (!image[i])
 			printf("Cant alloc memory\n");
@@ -55,10 +55,16 @@ int read_image(picture *photo, char *filename)
 	photo->bw = alloc_image(height, width);
 	for (int i = 0; i < height; i++)
 		for (int j = 0; j < width; j++)
-			if (photo->type == 2)
-				fscanf(file, "%hhu", &photo->bw[i][j]);
-			else if (photo->type == 5)
-				fread(&photo->bw[i][j], sizeof(uint_fast8_t), 1, file);
+			if (photo->type == 2) {
+				uint_fast8_t tmp;
+
+				fscanf(file, "%hhu", &tmp);
+				photo->bw[i][j] = (double)tmp;
+			} else if (photo->type == 5) {
+				uint_fast8_t tmp;
+				fread(&tmp, sizeof(uint_fast8_t), 1, file);
+				photo->bw[i][j] = (double)tmp;
+			}
 
 	fclose(file);
 	return 1;
@@ -92,17 +98,26 @@ int read_image_color(picture *photo, char *filename)
 	for (int i = 0; i < height; i++)
 		for (int j = 0; j < width; j++) {
 			if (photo->type == 3) {
-				fscanf(file, "%hhu", &photo->red[i][j]);
+				uint_fast8_t tmp;
 
-				fscanf(file, "%hhu", &photo->green[i][j]);
+				fscanf(file, "%hhu", &tmp);
+				photo->red[i][j] = (double)tmp;
 
-				fscanf(file, "%hhu", &photo->blue[i][j]);
+				fscanf(file, "%hhu", &tmp);
+				photo->green[i][j] = (double)tmp;
+
+				fscanf(file, "%hhu", &tmp);
+				photo->blue[i][j] = (double)tmp;
 			} else if (photo->type == 6) {
-				fread(&photo->red[i][j], sizeof(uint_fast8_t), 1, file);
+				uint_fast8_t tmp;
+				fread(&tmp, sizeof(uint_fast8_t), 1, file);
+				photo->red[i][j] = (double)tmp;
 
-				fread(&photo->green[i][j], sizeof(uint_fast8_t), 1, file);
+				fread(&tmp, sizeof(uint_fast8_t), 1, file);
+				photo->green[i][j] = (double)tmp;
 
-				fread(&photo->blue[i][j], sizeof(uint_fast8_t), 1, file);
+				fread(&tmp, sizeof(uint_fast8_t), 1, file);
+				photo->blue[i][j] = (double)tmp;
 			}
 		}
 

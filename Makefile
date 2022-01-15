@@ -1,18 +1,18 @@
 #Copyright Dragomir Andrei-Mihai
 #compiler setup
 CC=gcc
-CFLAGS=-Wall -Wextra -lm -std=c99 -g
+CFLAGS=-Wall -Wextra -std=c99 -g -lm
 
 # define targets
-TARGETS=photo_editor
+TARGET=image_editor
 
-build: $(TARGETS)
+build: $(TARGET)
+
+image_editor: main.o load_commands.o free_command.o crop_image.o select_pixels.o save_command.o filters.o rotate.o
+	$(CC) $(CFLAGS) $^ -o $@ -lm
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $^
-
-photo_editor: main.o load_commands.o free_command.o crop_image.o select_pixels.o save_command.o filters.o rotate.o
-	$(CC) $(CFLAGS) main.o load_commands.o free_command.o crop_image.o select_pixels.o save_command.o filters.o rotate.o -o image_editor
 
 pack:
 	zip -FSr 312CA_DragomirAndrei_Tema2.zip README Makefile *.c *.h

@@ -6,7 +6,7 @@
 #include "headers.h"
 #include <math.h>
 #define LENGHTMAX 100
-uint_fast8_t clamp(double x, uint_fast8_t max)
+double clamp(double x, double max)
 {
 	int min = 0;
 	if (x < min)
@@ -16,27 +16,27 @@ uint_fast8_t clamp(double x, uint_fast8_t max)
 	return x;
 }
 
-void apply_edge(picture photo, picture copy, uint_fast32_t i, uint_fast32_t j)
+void apply_edge(picture photo, picture *copy, uint_fast32_t i, uint_fast32_t j)
 {
 	double edge[] = {-1, -1, -1, -1, 8, -1, -1, -1, -1};
 	double new_pixel_red = 0, new_pixel_green = 0, new_pixel_blue = 0;
 	for (int k = -1; k < 2; k++)
 		for (int l = -1; l < 2; l++) {
-			new_pixel_red += (double)photo.red[i + k][j + l] *
+			new_pixel_red += photo.red[i + k][j + l] *
 							 edge[k + l + 2 * (k + 2)];
 
-			new_pixel_green += (double)photo.green[i + k][j + l] *
+			new_pixel_green += photo.green[i + k][j + l] *
 							   edge[k + l + 2 * (k + 2)];
 
-			new_pixel_blue += (double)photo.blue[i + k][j + l] *
+			new_pixel_blue += photo.blue[i + k][j + l] *
 							  edge[k + l + 2 * (k + 2)];
 		}
-	copy.red[i][j] = clamp(new_pixel_red, photo.max);
-	copy.green[i][j] = clamp(new_pixel_green, photo.max);
-	copy.blue[i][j] = clamp(new_pixel_blue, photo.max);
+	copy->red[i][j] = clamp(new_pixel_red, photo.max);
+	copy->green[i][j] = clamp(new_pixel_green, photo.max);
+	copy->blue[i][j] = clamp(new_pixel_blue, photo.max);
 }
 
-void apply_sharpen(picture photo, picture copy, uint_fast32_t i,
+void apply_sharpen(picture photo, picture *copy, uint_fast32_t i,
 				   uint_fast32_t j)
 {
 	double sharpen[] = {0, -1, 0, -1, 5, -1, 0, -1, 0};
@@ -44,21 +44,21 @@ void apply_sharpen(picture photo, picture copy, uint_fast32_t i,
 
 	for (int k = -1; k < 2; k++)
 		for (int l = -1; l < 2; l++) {
-			new_pixel_red += (double)photo.red[i + k][j + l] *
+			new_pixel_red += photo.red[i + k][j + l] *
 							 sharpen[k + l + 2 * (k + 2)];
 
-			new_pixel_green += (double)photo.green[i + k][j + l] *
+			new_pixel_green += photo.green[i + k][j + l] *
 							   sharpen[k + l + 2 * (k + 2)];
 
-			new_pixel_blue += (double)photo.blue[i + k][j + l] *
+			new_pixel_blue += photo.blue[i + k][j + l] *
 							  sharpen[k + l + 2 * (k + 2)];
 		}
-	copy.red[i][j] = clamp(new_pixel_red, photo.max);
-	copy.green[i][j] = clamp(new_pixel_green, photo.max);
-	copy.blue[i][j] = clamp(new_pixel_blue, photo.max);
+	copy->red[i][j] = clamp(new_pixel_red, photo.max);
+	copy->green[i][j] = clamp(new_pixel_green, photo.max);
+	copy->blue[i][j] = clamp(new_pixel_blue, photo.max);
 }
 
-void apply_blur(picture photo, picture copy, uint_fast32_t i, uint_fast32_t j)
+void apply_blur(picture photo, picture *copy, uint_fast32_t i, uint_fast32_t j)
 {
 	double box_blur[] = {0.1111, 0.1111, 0.1111, 0.1111, 0.1111, 0.1111,
 						 0.1111, 0.1111, 0.1111};
@@ -67,21 +67,21 @@ void apply_blur(picture photo, picture copy, uint_fast32_t i, uint_fast32_t j)
 
 	for (int k = -1; k < 2; k++)
 		for (int l = -1; l < 2; l++) {
-			new_pixel_red += (double)photo.red[i + k][j + l] *
+			new_pixel_red += photo.red[i + k][j + l] *
 							 box_blur[k + l + 2 * (k + 2)];
 
-			new_pixel_green += (double)photo.green[i + k][j + l] *
+			new_pixel_green += photo.green[i + k][j + l] *
 							   box_blur[k + l + 2 * (k + 2)];
 
-			new_pixel_blue += (double)photo.blue[i + k][j + l] *
+			new_pixel_blue += photo.blue[i + k][j + l] *
 							  box_blur[k + l + 2 * (k + 2)];
 		}
-	copy.red[i][j] = clamp(new_pixel_red, photo.max);
-	copy.green[i][j] = clamp(new_pixel_green, photo.max);
-	copy.blue[i][j] = clamp(new_pixel_blue, photo.max);
+	copy->red[i][j] = clamp(new_pixel_red, photo.max);
+	copy->green[i][j] = clamp(new_pixel_green, photo.max);
+	copy->blue[i][j] = clamp(new_pixel_blue, photo.max);
 }
 
-void apply_gaussian_blur(picture photo, picture copy, uint_fast32_t i,
+void apply_gaussian_blur(picture photo, picture *copy, uint_fast32_t i,
 						 uint_fast32_t j)
 {
 	double gaussian_blur[] = {0.0625, 0.125, 0.0625, 0.125, 0.25, 0.125,
@@ -89,19 +89,19 @@ void apply_gaussian_blur(picture photo, picture copy, uint_fast32_t i,
 	double new_pixel_red = 0, new_pixel_green = 0, new_pixel_blue = 0;
 	for (int k = -1; k < 2; k++)
 		for (int l = -1; l < 2; l++) {
-			new_pixel_red += (double)photo.red[i + k][j + l] *
+			new_pixel_red += photo.red[i + k][j + l] *
 							 gaussian_blur[k + l + 2 * (k + 2)];
 
-			new_pixel_green += (double)photo.green[i + k][j + l] *
+			new_pixel_green += photo.green[i + k][j + l] *
 							   gaussian_blur[k + l + 2 * (k + 2)];
 
-			new_pixel_blue += (double)photo.blue[i + k][j + l] *
+			new_pixel_blue += photo.blue[i + k][j + l] *
 							  gaussian_blur[k + l + 2 * (k + 2)];
 		}
 
-	copy.red[i][j] = clamp(new_pixel_red, photo.max);
-	copy.green[i][j] = clamp(new_pixel_green, photo.max);
-	copy.blue[i][j] = clamp(new_pixel_blue, photo.max);
+	copy->red[i][j] = clamp(new_pixel_red, photo.max);
+	copy->green[i][j] = clamp(new_pixel_green, photo.max);
+	copy->blue[i][j] = clamp(new_pixel_blue, photo.max);
 }
 
 void apply_filter(picture *photo, char command[])
@@ -138,10 +138,9 @@ void apply_filter(picture *photo, char command[])
 		 !strcmp(filter, "BLUR") || !strcmp(filter, "GAUSSIAN_BLUR")) &&
 		 !charlie_chaplin) {
 		picture copy = {};
-
 		copy.size = photo->size;
 		copy.type = photo->type;
-		copy.type = photo->type;
+		copy.max = photo->max;
 
 		copy.red = alloc_image(photo->size.height, photo->size.width);
 		copy.green = alloc_image(photo->size.height, photo->size.width);
@@ -154,35 +153,37 @@ void apply_filter(picture *photo, char command[])
 					i > 0 && j > 0 && i < photo->size.height - 1 &&
 					j < photo->size.width - 1) {
 					if (!strcmp(filter, "EDGE"))
-						apply_edge(*photo, copy, i, j);
+						apply_edge(*photo, &copy, i, j);
 
 					else if (!strcmp(filter, "SHARPEN"))
-						apply_sharpen(*photo, copy, i, j);
+						apply_sharpen(*photo, &copy, i, j);
 
 					else if (!strcmp(filter, "BLUR"))
-						apply_blur(*photo, copy, i, j);
+						apply_blur(*photo, &copy, i, j);
 
 					else if (!strcmp(filter, "GAUSSIAN_BLUR"))
-						apply_gaussian_blur(*photo, copy, i, j);
+						apply_gaussian_blur(*photo, &copy, i, j);
 				} else {
 					copy.red[i][j] = photo->red[i][j];
 					copy.green[i][j] = photo->green[i][j];
 					copy.blue[i][j] = photo->blue[i][j];
 				}
-		free_image(photo);
 
-		photo->size = copy.size;
-		copy.max = photo->max;
-		*photo = copy;
+		for (uint_fast32_t i = 0; i < photo->size.height; i++)
+			for (uint_fast32_t j = 0; j < photo->size.width; j++) {
+				photo->red[i][j] = copy.red[i][j];
+				photo->green[i][j] = copy.green[i][j];
+				photo->blue[i][j] = copy.blue[i][j];
+			}
+		free_image(&copy);
 		photo->loaded = 1;
-
 		printf("APPLY %s done\n", filter);
 	} else {
 		if (photo->type != 3 && photo->type != 6) {
 			printf("Easy, Charlie Chaplin\n");
 			return;
 		}
-		printf("Invalid filter name\n");
+		printf("APPLY parameter invalid\n");
 	}
 }
 

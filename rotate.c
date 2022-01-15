@@ -7,7 +7,7 @@
 #define ERROR_ANGLE "Unsupported rotation angle\n"
 #define SELECTION_ERROR "The selection must be square\n"
 
-void free_matrix(uint_fast8_t **p, uint32_t rows)
+void free_matrix(double **p, uint32_t rows)
 {
 	//simple function for freeing a matrix
 	for (uint_fast32_t i = 0; i < rows; i++)
@@ -17,13 +17,13 @@ void free_matrix(uint_fast8_t **p, uint32_t rows)
 	//it works by freeing each line then the matrix itself
 }
 
-uint_fast8_t **rotate90clockwise(uint_fast8_t **a, uint_fast32_t N)
+double **rotate90clockwise(double **a, uint_fast32_t N)
 {
 	for (uint_fast32_t i = 0; i < N / 2; i++) {
 		for (uint_fast32_t j = i; j < N - i - 1; j++) {
 			// Swap elements of each cycle
 			// in clockwise direction
-			uint_fast8_t temp = a[i][j];
+			double temp = a[i][j];
 			a[i][j] = a[N - 1 - j][i];
 			a[N - 1 - j][i] = a[N - 1 - i][N - 1 - j];
 			a[N - 1 - i][N - 1 - j] = a[j][N - 1 - i];
@@ -35,7 +35,7 @@ uint_fast8_t **rotate90clockwise(uint_fast8_t **a, uint_fast32_t N)
 
 void rotate_matrix(picture *photo)
 {
-	uint_fast8_t **copy_r, **copy_g, **copy_b, **copy;
+	double **copy_r, **copy_g, **copy_b, **copy;
 	if (photo->type == 2 || photo->type == 1 || photo->type == 4 ||
 		photo->type == 5) {
 		copy = alloc_image(photo->stop.height - photo->start.height,
@@ -110,7 +110,7 @@ void rotate_matrix(picture *photo)
 
 void rotate_entire_matrix(picture *photo)
 {
-	uint_fast8_t **copy_r, **copy_g, **copy_b, **copy;
+	double **copy_r, **copy_g, **copy_b, **copy;
 	if (photo->type == 2 || photo->type == 1 || photo->type == 4 ||
 	    photo->type == 5) {
 		copy = alloc_image(photo->size.height, photo->size.width);

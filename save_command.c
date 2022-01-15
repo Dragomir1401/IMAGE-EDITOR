@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "structures.h"
+#include <math.h>
 #define LENGHTMAX 100
 void save_bw(picture photo, char *filename, char type)
 {
@@ -22,10 +23,13 @@ void save_bw(picture photo, char *filename, char type)
 
 	for (uint_fast32_t i = 0; i < photo.size.height; i++) {
 		for (uint_fast32_t j = 0; j < photo.size.width; j++)
-			if (type == 'a')
-				fprintf(file, "%d ", photo.bw[i][j]);
-			else
-				fwrite(&photo.bw[i][j], sizeof(uint_fast8_t), 1, file);
+			if (type == 'a') {
+				uint_fast8_t tmp = (uint_fast8_t)round(photo.bw[i][j]);
+				fprintf(file, "%hhu ", tmp);
+			} else {
+				uint_fast8_t tmp = (uint_fast8_t)round(photo.bw[i][j]);
+				fwrite(&tmp, sizeof(uint_fast8_t), 1, file);
+			}
 		if (type == 'a')
 			fprintf(file, "%s", "\n");
 	}
@@ -53,14 +57,23 @@ void save_rgb(picture photo, char *filename, char type)
 	for (uint_fast32_t i = 0; i < photo.size.height; i++) {
 		for (uint_fast32_t j = 0; j < photo.size.width; j++)
 			if (type == 'a') {
-				fprintf(file, "%d %d %d ", photo.red[i][j], photo.green[i][j],
-						photo.blue[i][j]);
+				uint_fast8_t tmp = (uint_fast8_t)round(photo.red[i][j]);
+				fprintf(file, "%hhu ", tmp);
+
+				tmp = (uint_fast8_t)round(photo.green[i][j]);
+				fprintf(file, "%hhu ", tmp);
+
+				tmp = (uint_fast8_t)round(photo.blue[i][j]);
+				fprintf(file, "%hhu ", tmp);
 			} else {
-				fwrite(&photo.red[i][j], sizeof(uint_fast8_t), 1, file);
+				uint_fast8_t tmp = (uint_fast8_t)round(photo.red[i][j]);
+				fwrite(&tmp, sizeof(uint_fast8_t), 1, file);
 
-				fwrite(&photo.green[i][j], sizeof(uint_fast8_t), 1, file);
+				tmp = (uint_fast8_t)round(photo.green[i][j]);
+				fwrite(&tmp, sizeof(uint_fast8_t), 1, file);
 
-				fwrite(&photo.blue[i][j], sizeof(uint_fast8_t), 1, file);
+				tmp = (uint_fast8_t)round(photo.blue[i][j]);
+				fwrite(&tmp, sizeof(uint_fast8_t), 1, file);
 			}
 		if (type == 'a')
 			fprintf(file, "%s", "\n");
@@ -76,20 +89,39 @@ void save_image(picture photo, char *filename)
 	buff = getchar();
 
 	if (buff == ' ') {
-		char rest[LENGHTMAX];
-		scanf("%s", rest);
-		if (!photo.loaded) {
-			printf("No image loaded\n");
-			return;
+		char buff1;
+		buff1 = fgetc(stdin);
+		if (buff1 != 'a') {
+			ungetc(buff1, stdin);
+			if (!photo.loaded) {
+				printf("No image loaded\n");
+				return;
+			}
+
+			if (photo.type == 4 || photo.type == 5 || photo.type == 6)
+				photo.type -= 3;
+
+			if (photo.type == 2 || photo.type == 1)
+				save_bw(photo, filename, buff);
+			if (photo.type == 3)
+				save_rgb(photo, filename, buff);
+		} else {
+			char rest[LENGHTMAX];
+			scanf("%s", rest);
+
+			if (!photo.loaded) {
+				printf("No image loaded\n");
+				return;
+			}
+
+			if (photo.type == 4 || photo.type == 5 || photo.type == 6)
+				photo.type -= 3;
+
+			if (photo.type == 2 || photo.type == 1)
+				save_bw(photo, filename, 'a');
+			if (photo.type == 3)
+				save_rgb(photo, filename, 'a');
 		}
-
-		if (photo.type == 4 || photo.type == 5 || photo.type == 6)
-			photo.type -= 3;
-
-		if (photo.type == 2 || photo.type == 1)
-			save_bw(photo, filename, 'a');
-		if (photo.type == 3)
-			save_rgb(photo, filename, 'a');
 	} else if (buff == '\n') {
 		if (!photo.loaded) {
 			printf("No image loaded\n");
@@ -105,4 +137,3 @@ void save_image(picture photo, char *filename)
 			save_rgb(photo, filename, buff);
 	}
 }
-
