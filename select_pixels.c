@@ -30,7 +30,7 @@ void select_pixels(picture *photo, char *buff)
 	char x222[COMM_MAX], y111[COMM_MAX], y222[COMM_MAX], buff1;
 	int x11, x22, y11, y22; uint_fast32_t x1, x2, y1, y2;
 	// we check if we have all 4 coordinates or not
-	// we use strings to ease input	
+	// we use strings to ease input
 	buff1 = getchar();
 	if (buff1 == ' ') {
 		scanf("%s", y111);
@@ -91,7 +91,6 @@ void select_pixels(picture *photo, char *buff)
 	y1 = y11;
 	x2 = x22;
 	y2 = y22;
-
 	if (x1 > x2)
 		swap(&x1, &x2);
 	if (y1 > y2)

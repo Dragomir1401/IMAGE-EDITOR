@@ -15,7 +15,7 @@ image_editor: main.o load_commands.o free_command.o crop_image.o select_pixels.o
 	$(CC) $(CFLAGS) -c $^
 
 pack:
-	zip -FSr 312CA_DragomirAndrei_Tema2.zip README Makefile *.c *.h
+	zip -FSr 312CA_DragomirAndrei_Tema3.zip README Makefile *.c *.h
 
 clean:
 	rm -f $(TARGETS)

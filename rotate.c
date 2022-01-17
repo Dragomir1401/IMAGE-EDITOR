@@ -85,7 +85,6 @@ void rotate_matrix(picture *photo)
 			copy_b = rotate90clockwise(copy_b, photo->stop.height -
 								   photo->start.height);
 	}
-
 	// We copy only the pixels from the selection back in the original matrix
 	for (uint_fast32_t i = photo->start.height; i < photo->stop.height; i++)
 		for (uint_fast32_t j = photo->start.width; j < photo->stop.width; j++)
@@ -147,7 +146,6 @@ void rotate_entire_matrix(picture *photo)
 			}
 	// We free the initial photo
 	free_image(photo);
-
 	// We alloc a new photo with the coordinates swapped
 	if (photo->type == 2 || photo->type == 1 || photo->type == 4 ||
 		photo->type == 5) {
@@ -159,7 +157,6 @@ void rotate_entire_matrix(picture *photo)
 
 		photo->blue = alloc_image(photo->size.width, photo->size.height);
 	}
-
 	// We rotate the matrix in the initial photo based on the values on
 	// the copy made before
 	for (uint_fast32_t i = 0; i < photo->size.width; i++)
@@ -175,7 +172,6 @@ void rotate_entire_matrix(picture *photo)
 
 				photo->blue[i][j] = copy_b[photo->size.height - j - 1][i];
 			}
-
 	// We proceed to free the copies used
 	if (photo->type == 2 || photo->type == 1 || photo->type == 4 ||
 		photo->type == 5) {
@@ -188,7 +184,6 @@ void rotate_entire_matrix(picture *photo)
 
 		free_matrix(copy_b, photo->size.height);
 	}
-
 	// We swap the coordinates for selection and entire photo
 	// using bitwise swap
 	photo->size.height = photo->size.height ^ photo->size.width;

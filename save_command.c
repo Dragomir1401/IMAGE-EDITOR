@@ -107,14 +107,14 @@ void save_image(picture photo, char *filename)
 		buff1 = fgetc(stdin);
 		// If we get ascii we will have 'a' as first letter
 		if (buff1 != 'a') {
-			// If we dont get 'a' as first character it means we got to the next line
+			// If we dont get 'a' as first char it means we got to next line
 			ungetc(buff1, stdin);
 			// We put back the character to stdin if we pass to the next line
 			if (!photo.loaded) {
 				printf("No image loaded\n");
 				return;
 			}
-			// We reduce type to the range [1, 3] to save binary with reusable functions
+			// We reduce type to [1, 3] to save binary with reusable functions
 			if (photo.type == 4 || photo.type == 5 || photo.type == 6)
 				photo.type -= 3;
 
@@ -131,7 +131,7 @@ void save_image(picture photo, char *filename)
 				printf("No image loaded\n");
 				return;
 			}
-			// We reduce type to the range [1, 3] to save binary with reusable functions
+			// We reduce type to [1, 3] to save binary with reusable functions
 			if (photo.type == 4 || photo.type == 5 || photo.type == 6)
 				photo.type -= 3;
 
@@ -146,7 +146,7 @@ void save_image(picture photo, char *filename)
 			printf("No image loaded\n");
 			return;
 		}
-		// We reduce type to the range [1, 3] to save binary with reusable functions
+		// We reduce type to [1, 3] to save binary with reusable functions
 		if (photo.type == 4 || photo.type == 5 || photo.type == 6)
 			photo.type -= 3;
 

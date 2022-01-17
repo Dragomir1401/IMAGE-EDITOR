@@ -2,29 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "structures.h"
-// TO DO COMMENTS
-void print_image(picture photo)
-{
-	if (photo.type == 2 || photo.type == 1) {
-		for (uint_fast32_t i = 0; i < photo.size.height; i++) {
-			for (uint_fast32_t j = 0; j < photo.size.width; j++)
-				printf("%f ", photo.bw[i][j]);
-
-			printf("\n");
-		}
-	} else if (photo.type == 3) {
-		for (uint_fast32_t i = 0; i < photo.size.height; i++) {
-			for (uint_fast32_t j = 0; j < photo.size.width; j++)
-				printf("%f %f %f  ", photo.red[i][j], photo.green[i][j],
-					   photo.blue[i][j]);
-
-			printf("\n");
-		}
-	}
-}
 
 void free_image(picture *photo)
 {
+	// Functions to free an image matrices based on the type
+	// with one matrix
 	if (photo->type == 2 || photo->type == 1 || photo->type == 4 ||
 	    photo->type == 5) {
 		for (uint_fast32_t i = 0; i < photo->size.height; i++)
@@ -32,6 +14,7 @@ void free_image(picture *photo)
 
 		free(photo->bw);
 	} else if (photo->type == 3 || photo->type == 6) {
+		// For 3 matrices
 		for (uint_fast32_t i = 0; i < photo->size.height; i++) {
 			free(photo->red[i]);
 			free(photo->green[i]);
